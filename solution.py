@@ -1,23 +1,37 @@
-assignments = []
+"""
+Part of udacity AI Nanodegree
 
-rows = 'ABCDEFGHI'
-cols = '123456789'
+Parameters
+----------
+grid : string
+    The sudoku puzzle to solve, left to right, top to bottom
+
+Returns
+-------
+dictionary
+    Dictionary representation of the solved sudoku puzzle, False if unsuccessful
+
+"""
+ASSIGNMENTS = []
+
+ROWS = 'ABCDEFGHI'
+COLS = '123456789'
 
 
-def cross(a, b):
+def cross(matrix_a, matrix_b):
     "Cross product of elements in A and elements in B."
-    return [s + t for s in a for t in b]
+    return [s + t for s in matrix_a for t in matrix_b]
 
 
-boxes = cross(rows, cols)
+BOXES = cross(ROWS, COLS)
 
-row_units = [cross(r, cols) for r in rows]
-column_units = [cross(rows, c) for c in cols]
-square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
+ROW_UNITS = [cross(r, COLS) for r in ROWS]
+COLUMN_UNITS = [cross(ROWS, c) for c in COLS]
+SQUARE_UNITS = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
                 for cs in ('123', '456', '789')]
-unitlist = row_units + column_units + square_units
-units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s], [])) - set([s])) for s in boxes)
+UNITLIST = ROW_UNITS + COLUMN_UNITS + SQUARE_UNITS
+UNITS = dict((s, [u for u in UNITLIST if s in u]) for s in BOXES)
+PEERS = dict((s, set(sum(UNITS[s], [])) - set([s])) for s in BOXES)
 
 
 def assign_value(values, box, value):
@@ -32,7 +46,7 @@ def assign_value(values, box, value):
 
     values[box] = value
     if len(value) == 1:
-        assignments.append(values.copy())
+        ASSIGNMENTS.append(values.copy())
     return values
 
 
@@ -62,13 +76,13 @@ def grid_values(grid):
     """
     chars = []
     digits = '123456789'
-    for c in grid:
-        if c in digits:
-            chars.append(c)
-        if c == '.':
+    for character in grid:
+        if character in digits:
+            chars.append(character)
+        if character == '.':
             chars.append(digits)
     assert len(chars) == 81
-    return dict(zip(boxes, chars))
+    return dict(zip(BOXES, chars))
 
 
 def display(values):
@@ -77,12 +91,13 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    width = 1 + max(len(values[s]) for s in boxes)
+    print(values)
+    width = 1 + max(len(values[s]) for s in BOXES)
     line = '+'.join(['-' * (width * 3)] * 3)
-    for r in rows:
-        print(''.join(values[r + c].center(width) + ('|' if c in '36' else '')
-                      for c in cols))
-        if r in 'CF':
+    for row in ROWS:
+        print(''.join(values[row + c].center(width) + ('|' if c in '36' else '')
+                      for c in COLS))
+        if row in 'CF':
             print(line)
     return
 
@@ -97,7 +112,7 @@ def eliminate(values):
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
         digit = values[box]
-        for peer in peers[box]:
+        for peer in PEERS[box]:
             values[peer] = values[peer].replace(digit, '')
     return values
 
@@ -109,7 +124,7 @@ def only_choice(values):
     Input: A sudoku in dictionary form.
     Output: The resulting sudoku in dictionary form.
     """
-    for unit in unitlist:
+    for unit in UNITLIST:
         for digit in '123456789':
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
@@ -149,10 +164,10 @@ def search(values):
     if values is False:
         return False
 
-    if all(len(values[s]) == 1 for s in boxes):
+    if all(len(values[s]) == 1 for s in BOXES):
         return values
 
-    n, s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
+    n, s = min((len(values[s]), s) for s in BOXES if len(values[s]) > 1)
 
     for value in values[s]:
         new_sudoku = values.copy()
@@ -167,10 +182,15 @@ def solve(grid):
     Find the solution to a Sudoku grid.
     Args:
         grid(string): a string representing a sudoku grid.
-            Example: '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+            Example: '2.............62....1....7...6..8...3...9...7...6..
+            4...4....8....52.............3'
     Returns:
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
+    initial_values = grid_values(grid)
+    return search(initial_values)
+
+
 
 
 if __name__ == '__main__':
@@ -179,7 +199,7 @@ if __name__ == '__main__':
 
     try:
         from visualize import visualize_assignments
-        visualize_assignments(assignments)
+        visualize_assignments(ASSIGNMENTS)
 
     except SystemExit:
         pass

@@ -29,10 +29,14 @@ ROW_UNITS = [cross(r, COLS) for r in ROWS]
 COLUMN_UNITS = [cross(ROWS, c) for c in COLS]
 SQUARE_UNITS = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
                 for cs in ('123', '456', '789')]
-UNITLIST = ROW_UNITS + COLUMN_UNITS + SQUARE_UNITS
+
+DIAG_UNITS = [[s + COLS[idx] for idx, s in enumerate(ROWS)]]
+DIAG_UNITS.append([s + COLS[len(COLS) - (idx + 1)] for idx, s in enumerate(ROWS)])
+# print(COLUMN_UNITS)
+print(DIAG_UNITS)
+UNITLIST = ROW_UNITS + COLUMN_UNITS + SQUARE_UNITS + DIAG_UNITS
 UNITS = dict((s, [u for u in UNITLIST if s in u]) for s in BOXES)
 PEERS = dict((s, set(sum(UNITS[s], [])) - set([s])) for s in BOXES)
-
 
 def assign_value(values, box, value):
     """
@@ -91,7 +95,6 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    print(values)
     width = 1 + max(len(values[s]) for s in BOXES)
     line = '+'.join(['-' * (width * 3)] * 3)
     for row in ROWS:
@@ -196,7 +199,8 @@ def solve(grid):
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     display(solve(diag_sudoku_grid))
-
+    # for idx, val in enumerate(ROWS):
+    #     print(idx, val)
     try:
         from visualize import visualize_assignments
         visualize_assignments(ASSIGNMENTS)

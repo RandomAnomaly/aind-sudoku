@@ -65,46 +65,12 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    # Find all instances of naked twins
-    # A naked twin - when a box has two possible values, and there is another box in the same
-    # unit with only the same two possibilities
-    # print("INPUT")
-    # display(values)
-    # print("//////////////////////")
-    # two_remain = [box for box in BOXES if len(values[box]) == 2]
-    # for box in two_remain:
-    #     flatten = {item for sublist in UNITS[box] for item in sublist if values[
-    #         item] == values[box] and item != box}
-
-    #     if len(flatten) == 1:
-    #         # Eliminate the naked twins as possibilities for their peers
-    #         twin = flatten.pop()
-    #         kill_list = {target for target in PEERS if target !=
-    #                      box and target != twin}
-    #         for target in kill_list:
-    #             # if "2" in values[target]:
-    #             #     import pdb; pdb.set_trace()
-    #             values = assign_value(values, target, ''.join(
-    #                 c for c in values[target] if c not in values[twin]))
-    #     # flatten = {item for item in }
-    #     # print("Box", box, values[box])
-    #     # for b in flatten:
-    #     #     print(b, values[b])
-
-    # print("OUTPUT")
-    # display(values)
-    # print("//////////////////////")
-    # return values
-    # for unit_key in UNITS.keys():
-    #     for unit in UNITS[unit_key]:
-    #         print(unit_key,unit)
     for unit in UNITLIST:
         two_remain = [box for box in unit if len(values[box]) == 2]
         pairs = [box for box in two_remain if len([b for b in two_remain if values[box] == values[b]]) == 2]
         if len(pairs) == 2:
             # Naked twins found, eliminate their values from all others in the unit
-            targets = [box for box in unit if box not in pairs]
-            for box in targets:
+            for box in [box for box in unit if box not in pairs]:
                 values = assign_value(values,box, ''.join(ch for ch in values[box] if ch not in values[pairs[0]]))                
     return values
 

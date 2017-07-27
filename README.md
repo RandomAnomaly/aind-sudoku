@@ -3,11 +3,11 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: When searching for twins, we should iteratively restrict our search to each unit of boxes, and to boxes of size 2 within those units. This is because a naked twin is only within a unit, and boxes outside of the unit are irrelevant.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: Diaganols are simply added to the list of units, and therefore constraints are applied in the same fashion as the rest of the sudoku puzzle - that is we are only looking at potential values which do not violate the "number appears once per unit" principle.
 
 ### Install
 
